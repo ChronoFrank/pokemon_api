@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
 APPS = [
     'rest_framework',
+    'pokemons',
 ]
 
 INSTALLED_APPS += APPS
