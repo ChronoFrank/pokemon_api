@@ -143,6 +143,10 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'America/Bogota'
 
+EVOLUTION_CHAIN_URL = 'https://pokeapi.co/api/v2/evolution-chain/'
+POKEMON_DETAILS_URL = 'https://pokeapi.co/api/v2/pokemon/'
+
+
 try:
     exec(open(os.path.join(BASE_DIR, 'mo_project/settings_local.py')).read())
 except IOError:
