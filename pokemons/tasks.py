@@ -5,7 +5,8 @@ from django.conf import settings
 
 
 def get_pokemon_evolution_chains_count():
-    url = 'https://pokeapi.co/api/v2/evolution-chain/'
+    url = settings.EVOLUTION_CHAIN_URL
+
     response = requests.get(url)
     if response.status_code == 200:
         json_response = json.loads(response.text)
@@ -13,7 +14,7 @@ def get_pokemon_evolution_chains_count():
         return int(_count)
 
 def get_evolution_chain(id):
-    url = 'https://pokeapi.co/api/v2/evolution-chain/'
+    url = settings.EVOLUTION_CHAIN_URL
     url += '{0}'.format(id)
     print("Evolution chain -> {0}".format(url))
     response = requests.get(url)
@@ -22,7 +23,8 @@ def get_evolution_chain(id):
         return json_response.get('chain')
 
 def get_pokemon_data(query):
-    url = 'https://pokeapi.co/api/v2/pokemon/{0}'.format(query)
+    url = settings.POKEMON_DETAILS_URL + '{0}/'.format(query)
+    print(url)
 
     response = requests.get(url)
     if response.status_code == 404:
