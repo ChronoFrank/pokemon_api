@@ -1,6 +1,7 @@
 import requests
 import json
 from .models import Evolution, Pokemon
+from django.conf import settings
 
 
 def get_pokemon_evolution_chains_count():
@@ -22,10 +23,15 @@ def get_evolution_chain(id):
 
 def get_pokemon_data(query):
     url = 'https://pokeapi.co/api/v2/pokemon/{0}'.format(query)
+
     response = requests.get(url)
+    if response.status_code == 404:
+        print("Pokemon information not found for {0}".format(query))
+        return None
     if response.status_code == 200:
         json_response = json.loads(response.text)
         return json_response
+
 
 
 def extract_pokemons_from_evolution_chain_data(pokemon_data):
@@ -33,7 +39,6 @@ def extract_pokemons_from_evolution_chain_data(pokemon_data):
         if 'species' in pokemon_data.keys() and pokemon_data.get('species'):
             base_pokemon = save_pokemon_info_in_database(pokemon_data.get('species').get('name'))
             if base_pokemon:
-                print(len(pokemon_data.get('evolves_to')))
                 if 'evolves_to' in pokemon_data.keys() and pokemon_data.get('evolves_to'):
                     for data in pokemon_data.get('evolves_to'):
                         save_evolution_in_database(base_pokemon, data)
@@ -95,7 +100,10 @@ def save_evolution_in_database(base_pokemon, evolution_data):
 def evolution_chain_crawler(chain_id=None):
     if chain_id:
         evolution_chain_data = get_evolution_chain(id=chain_id)
-        extract_pokemons_from_evolution_chain_data(evolution_chain_data)
+        if evolution_chain_data:
+            extract_pokemons_from_evolution_chain_data(evolution_chain_data)
+        else:
+            raise Exception("No evolution data for the id provided")
 
     else:
         evolution_chain_count = get_pokemon_evolution_chains_count()
