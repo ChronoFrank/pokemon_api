@@ -3,9 +3,11 @@ from django.contrib import admin
 # Register your models here.
 from .models import Pokemon, Evolution
 
+
 class PokemonsAdmin(admin.ModelAdmin):
     list_display = ('pokemon_id', 'name', )
     search_fields = ('name', )
+
 
 class EvolutionsAdmin(admin.ModelAdmin):
     list_display = ('pokemon', )

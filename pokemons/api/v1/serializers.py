@@ -4,6 +4,7 @@ from pokemons.models import Pokemon, Evolution
 
 class EvolutionSerializer(serializers.ModelSerializer):
     info = serializers.SerializerMethodField('get_evolution', read_only=True)
+
     class Meta:
         model = Evolution
         fields = ('info',)
@@ -16,8 +17,10 @@ class EvolutionSerializer(serializers.ModelSerializer):
         }
         return aux
 
+
 class PokemonSerializer(serializers.ModelSerializer):
     evolutions = EvolutionSerializer(many=True, read_only=True,)
+
     class Meta:
         model = Pokemon
         fields = ('pokemon_id',

@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 
+
 class Pokemon(models.Model):
     """
     Pokemon basic model to store information about the pokemons and the basic stats
@@ -10,12 +11,12 @@ class Pokemon(models.Model):
     name = models.CharField(max_length=200)
     height = models.IntegerField(default=0)
     weight = models.IntegerField(default=0)
-    hp =  models.IntegerField(default=0)
-    attack =  models.IntegerField(default=0)
-    defense =  models.IntegerField(default=0)
-    special_attack =  models.IntegerField(default=0)
-    special_defense =  models.IntegerField(default=0)
-    speed =  models.IntegerField(default=0)
+    hp = models.IntegerField(default=0)
+    attack = models.IntegerField(default=0)
+    defense = models.IntegerField(default=0)
+    special_attack = models.IntegerField(default=0)
+    special_defense = models.IntegerField(default=0)
+    speed = models.IntegerField(default=0)
 
     def __str__(self):
         return '{0}'.format(self.name)
@@ -28,10 +29,12 @@ class Pokemon(models.Model):
         :return: A QuerySet object containing all the 3 level evolutions for the current pokemon
         """
         evolutions_queryset = Evolution.objects.filter(pokemon=self)
-        second_evolution_queryset = Evolution.objects.filter(pokemon__id__in=evolutions_queryset.values_list('evolution_pokemon_id',
-                                                                                                             flat=True))
-        union_query_set = list(evolutions_queryset.values_list('pokemon_id', flat=True)) + \
-                          list(second_evolution_queryset.values_list('pokemon_id', flat=True))
+        second_evolution_queryset = Evolution.objects.filter(
+            pokemon__id__in=evolutions_queryset.values_list('evolution_pokemon_id', flat=True)
+        )
+        union_query_set = list(evolutions_queryset.values_list('pokemon_id', flat=True)) + list(
+            second_evolution_queryset.values_list('pokemon_id', flat=True)
+        )
         queryset = Evolution.objects.filter(pokemon__id__in=union_query_set)
         return queryset
 
@@ -43,6 +46,7 @@ class Pokemon(models.Model):
         :return: str saying if the pokemon is pre-evolution or evolution.
         """
         return 'pre-evolution' if Evolution.objects.filter(pokemon=self).exists() else 'evolution'
+
 
 class Evolution(models.Model):
     """

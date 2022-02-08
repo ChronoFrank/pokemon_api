@@ -13,6 +13,7 @@ def get_pokemon_evolution_chains_count():
         _count = json_response.get('count')
         return int(_count)
 
+
 def get_evolution_chain(id):
     url = settings.EVOLUTION_CHAIN_URL
     url += '{0}'.format(id)
@@ -21,6 +22,7 @@ def get_evolution_chain(id):
     if response.status_code == 200:
         json_response = json.loads(response.text)
         return json_response.get('chain')
+
 
 def get_pokemon_data(query):
     url = settings.POKEMON_DETAILS_URL + '{0}/'.format(query)
@@ -33,7 +35,6 @@ def get_pokemon_data(query):
     if response.status_code == 200:
         json_response = json.loads(response.text)
         return json_response
-
 
 
 def extract_pokemons_from_evolution_chain_data(pokemon_data):
@@ -52,13 +53,12 @@ def extract_pokemons_from_evolution_chain_data(pokemon_data):
             extract_pokemons_from_evolution_chain_data(list_data)
 
 
-
 def save_pokemon_info_in_database(pokemon_name=None):
     if pokemon_name:
         try:
             pokemon_obj = Pokemon.objects.get(name=pokemon_name)
         except Pokemon.DoesNotExist:
-            #save pokemon in database
+            # save pokemon in database
             print("retreving info for {0}".format(pokemon_name))
             pokemon_data = get_pokemon_data(pokemon_name)
             if pokemon_data:
@@ -82,12 +82,13 @@ def save_pokemon_info_in_database(pokemon_name=None):
 
         return pokemon_obj
 
+
 def save_evolution_in_database(base_pokemon, evolution_data):
-    #save data in evolution model
-    #if 'species' in evolution_data.keys() and evolution_data.get('species'):
+    # save data in evolution model
+    # if 'species' in evolution_data.keys() and evolution_data.get('species'):
     evolution_pokemon = save_pokemon_info_in_database(evolution_data.get('species').get('name'))
     try:
-        queryset = Evolution.objects.get(pokemon__id=base_pokemon.id, evolution_pokemon__id=evolution_pokemon.id)
+        Evolution.objects.get(pokemon__id=base_pokemon.id, evolution_pokemon__id=evolution_pokemon.id)
     except Evolution.DoesNotExist:
         evolution_obj = Evolution()
         evolution_obj.pokemon = base_pokemon
@@ -96,7 +97,6 @@ def save_evolution_in_database(base_pokemon, evolution_data):
                 evolution_pokemon = save_pokemon_info_in_database(evolution_data.get('species').get('name'))
                 evolution_obj.evolution_pokemon = evolution_pokemon
         evolution_obj.save()
-
 
 
 def evolution_chain_crawler(chain_id=None):
